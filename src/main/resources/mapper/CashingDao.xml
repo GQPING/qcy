@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.CashingDao">
+
+    <sql id="base">
+         a.id, a.contractDetailID, a.stageID, a.payType, a.payPerson, a.payQuota, a.payDate, a.cashRemarkDescription,
+         b.id,b.contractID,b.exportDate,b.vehicleNumber,b.projectAddress,b.productMode,b.productPrice,b.productDeposit,b.supplyDescription,b.salePerson,
+         b.startDate,b.finalDate,b.dateCycle,b.canPayQuota,b.productDiscount,b.hasPayQuota,b.unPayQuota,b.payState,b.hasBill,b.payRemindDays,b.contractDetailRemarkDescription,
+         c.id as contract_ID, c.customerID, c.contractNumber, c.signDate, c.contractType, c.marketPerson, c.contractPayBank, c.contractState, c.contractRemarkDescription,
+         d.id as customer_ID, d.customerName, d.customerLevel, d.customerCreateDate,  d.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Cashing" id="res">
+         <id property="id" column="id"/>
+		 <result property="contractDetailID" column="contractDetailID"/>
+		 <result property="stageID" column="stageID"/>
+		 <result property="payType" column="payType"/>
+		 <result property="payPerson" column="payPerson"/>
+		 <result property="payQuota" column="payQuota"/>
+		 <result property="payDate" column="payDate"/>
+		 <result property="cashRemarkDescription" column="cashRemarkDescription" />
+         <association property="contractDetail" javaType="ContractDetail">
+             <id property="id" column="contractDetail_ID" />
+			 <result property="contractID" column="contractID" />
+			 <result property="exportDate" column="exportDate" />
+			 <result property="vehicleNumber" column="vehicleNumber" />
+			 <result property="projectAddress" column="projectAddress" />
+			 <result property="productMode" column="productMode" />
+			 <result property="productPrice" column="productPrice" />
+			 <result property="productDeposit" column="productDeposit" />
+			 <result property="supplyDescription" column="supplyDescription" />
+			 <result property="salePerson" column="salePerson" />
+			 <result property="startDate" column="startDate" />
+			 <result property="finalDate" column="finalDate" />
+			 <result property="dateCycle" column="dateCycle" />
+			 <result property="canPayQuota" column="canPayQuota" />
+			 <result property="productDiscount" column="productDiscount" />
+			 <result property="hasPayQuota" column="hasPayQuota" />
+			 <result property="unPayQuota" column="unPayQuota" />
+			 <result property="payState" column="payState" />
+			 <result property="hasBill" column="hasBill" />
+			 <result property="payRemindDays" column="payRemindDays" />
+			 <result property="contractDetailRemarkDescription" column="contractDetailRemarkDescription" />
+			 <association property="contract" javaType="Contract">
+				 <id property="id" column="contract_ID"/>
+				 <result property="customerID" column="customerID"/>
+				 <result property="contractNumber" column="contractNumber"/>
+				 <result property="signDate" column="signDate"/>
+				 <result property="contractType" column="contractType"/>
+				 <result property="marketPerson" column="marketPerson"/>
+				 <result property="contractPayBank" column="contractPayBank"/>
+				 <result property="contractState" column="contractState"/>
+				 <result property="contractRemarkDescription" column="contractRemarkDescription"/>
+				 <association property="customer" javaType="Customer">
+					 <result property="id" column="customer_ID"/>
+					 <result property="customerName" column="customerName"/>
+					 <result property="customerLevel" column="customerLevel"/>
+					 <result property="customerCreateDate" column="customerCreateDate"/>
+					 <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+				 </association>
+			 </association>
+         </association>   
+    </resultMap>
+
+	<insert id="add" parameterType="Cashing" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into cashing
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="contractDetailID != null">
+				contractDetailID,
+			</if>
+			<if test="stageID != null">
+				stageID,
+			</if>
+			<if test="payType != null">
+				payType,
+			</if>
+			<if test="payPerson != null">
+				payPerson,
+			</if>
+			<if test="payQuota != null">
+				payQuota,
+			</if>
+			<if test="payDate != null">
+				payDate,
+			</if>
+			<if test="cashRemarkDescription != null">
+				cashRemarkDescription,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="contractDetailID != null">
+				#{contractDetailID},
+			</if>
+			<if test="stageID != null">
+				#{stageID},
+			</if>
+			<if test="payType != null">
+				#{payType},
+			</if>
+			<if test="payPerson != null">
+				#{payPerson},
+			</if>
+			<if test="payQuota != null">
+				#{payQuota},
+			</if>
+			<if test="payDate != null">
+				#{payDate},
+			</if>
+			<if test="cashRemarkDescription != null">
+				#{cashRemarkDescription},
+			</if>
+		</trim>
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		delete from cashing where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Cashing">
+		update cashing
+		<set>
+			<if test="contractDetailID != null">
+				contractDetailID = #{contractDetailID},
+			</if>
+			<if test="stageID != null">
+				stageID = #{stageID},
+			</if>
+			<if test="payType != null">
+				payType = #{payType},
+			</if>
+			<if test="payPerson != null">
+				payPerson = #{payPerson},
+			</if>
+		    <if test="payQuota != null">
+				payQuota = #{payQuota},
+			</if>
+			<if test="payDate != null">
+				payDate = #{payDate},
+			</if>
+			<if test="cashRemarkDescription != null">
+                cashRemarkDescription = #{cashRemarkDescription},
+            </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="updateNullByStageID" parameterType="int">
+		update cashing set stageID = null where stageID = #{id}
+	</update>
+
+	<select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" /> from cashing as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		where a.id = #{id}
+	</select>
+
+	<select id="findAll" resultMap="res">
+		select <include refid="base" /> from cashing as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		order by a.payDate DESC
+	</select>
+
+	<select id="findByCondition" parameterType="Cashing" resultMap="res">
+		select <include refid="base" /> from cashing as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<!--模糊查询-->
+			<if test="searchString != null">
+				and (a.payType like concat(concat('%', #{searchString}), '%')
+				or a.payPerson like concat(concat('%', #{searchString}), '%')
+				or a.cashRemarkDescription like concat(concat('%', #{searchString}), '%')
+				or b.vehicleNumber like concat(concat('%', #{searchString}), '%')
+				or b.projectAddress like concat(concat('%', #{searchString}), '%')
+				or c.contractNumber like concat(concat('%', #{searchString}), '%')
+				or c.contractType like concat(concat('%', #{searchString}), '%')
+				or d.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.payDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.payDate)  = year(#{timeStart}) and month(a.payDate) = month(#{timeStart}) and day(a.payDate)  = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.payDate)  = year(#{timeFinal}) and month(a.payDate) = month(#{timeFinal}) and day(a.payDate)  = day(#{timeFinal}))
+			</if>
+		</where>
+		order by a.payDate DESC
+	</select>
+
+	<select id="findByConditions" parameterType="Cashing" resultMap="res">
+		select <include refid="base" /> from cashing as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<if test="contractDetailID != null">
+				and a.contractDetailID = #{contractDetailID}
+			</if>
+			<if test="stageID != null">
+				and a.stageID = #{stageID}
+			</if>
+			<if test="payType != null">
+				and a.payType = #{payType}
+			</if>
+			<if test="payPerson != null">
+				and a.payPerson = #{payPerson}
+			</if>
+		</where>
+		order by a.payDate DESC
+	</select>
+
+	<select id="findByConditionPage" parameterType="Cashing" resultMap="res">
+		select <include refid="base" /> from cashing as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<!--模糊查询-->
+			<if test="searchString != null">
+				and (a.payType like concat(concat('%', #{searchString}), '%')
+				or a.payPerson like concat(concat('%', #{searchString}), '%')
+				or a.cashRemarkDescription like concat(concat('%', #{searchString}), '%')
+				or b.vehicleNumber like concat(concat('%', #{searchString}), '%')
+				or b.billType like concat(concat('%', #{searchString}), '%')
+				or b.projectAddress like concat(concat('%', #{searchString}), '%')
+				or c.contractNumber like concat(concat('%', #{searchString}), '%')
+				or c.contractType like concat(concat('%', #{searchString}), '%')
+				or d.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.payDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.payDate)  = year(#{timeStart}) and month(a.payDate) = month(#{timeStart}) and day(a.payDate)  = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.payDate)  = year(#{timeFinal}) and month(a.payDate) = month(#{timeFinal}) and day(a.payDate)  = day(#{timeFinal}))
+			</if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by a.payDate DESC, a.id limit #{start},#{limit}
+		</if>
+	</select>
+
+	<select id="findQuotasByCondition" parameterType="Cashing" resultType="Double">
+		select sum(a.payQuota) from cashing as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<if test="contractDetailID != null">
+				and a.contractDetailID = #{contractDetailID}
+			</if>
+			<if test="stageID != null" >
+				and a.stageID = #{stageID}
+			</if>
+			<if test="isCustomer != null and id != null" >
+				and d.id = #{id}
+			</if>
+			<if test="isContract != null and id != null" >
+				and c.id = #{id}
+			</if>
+			<if test="isYear != null">
+				and year(a.payDate) = year(#{payDate})
+			</if>
+			<if test="isMonth != null">
+				and year(a.payDate) = year(#{payDate})
+				and month(a.payDate) = month(#{payDate})
+			</if>
+			<if test="isToday != null" >
+				and year(a.payDate) = year(now())
+				and month(a.payDate) = month(now())
+				and day(a.payDate) = day(now())
+			</if>
+		</where>
+	</select>
+
+</mapper>

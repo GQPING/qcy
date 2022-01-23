@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.ContractDetailDao">
+
+     <sql id="base">
+         a.id,a.contractID,a.exportDate,a.vehicleNumber,a.projectAddress,a.productMode,a.productPrice,a.productDeposit,a.supplyDescription,a.salePerson,
+         a.startDate,a.finalDate,a.dateCycle,a.canPayQuota,a.productDiscount,a.hasPayQuota,a.unPayQuota,a.payState,a.hasBill,a.payRemindDays,a.contractDetailRemarkDescription,
+         b.id as contract_ID, b.customerID, b.contractNumber, b.signDate, b.contractType, b.marketPerson, b.contractPayBank,b.contractState, b.contractRemarkDescription,
+         c.id as customer_ID, c.customerName, c.customerLevel, c.customerCreateDate,  c.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.ContractDetail" id="res">
+        <id property="id" column="id" />
+        <result property="contractID" column="contractID" />
+        <result property="exportDate" column="exportDate" />
+	    <result property="vehicleNumber" column="vehicleNumber" />
+	    <result property="projectAddress" column="projectAddress" />
+	    <result property="productMode" column="productMode" />
+	    <result property="productPrice" column="productPrice" />
+	    <result property="productDeposit" column="productDeposit" />
+	    <result property="supplyDescription" column="supplyDescription" />
+        <result property="salePerson" column="salePerson" />
+	    <result property="startDate" column="startDate" />
+	    <result property="finalDate" column="finalDate" />
+	    <result property="dateCycle" column="dateCycle" />
+	    <result property="canPayQuota" column="canPayQuota" />
+        <result property="productDiscount" column="productDiscount" />
+	    <result property="hasPayQuota" column="hasPayQuota" />
+        <result property="unPayQuota" column="unPayQuota" />
+	    <result property="payState" column="payState" />
+	    <result property="hasBill" column="hasBill" />
+        <result property="payRemindDays" column="payRemindDays" />
+        <result property="contractDetailRemarkDescription" column="contractDetailRemarkDescription" />
+	    <association property="contract" javaType="Contract">
+            <id property="id" column="contract_ID"/>
+            <result property="customerID" column="customerID"/>
+            <result property="contractNumber" column="contractNumber"/>
+            <result property="signDate" column="signDate"/>
+            <result property="contractType" column="contractType"/>
+            <result property="marketPerson" column="marketPerson"/>
+            <result property="contractPayBank" column="contractPayBank"/>
+            <result property="contractState" column="contractState"/>
+            <result property="contractRemarkDescription" column="contractRemarkDescription"/>
+            <association property="customer" javaType="Customer">
+                <result property="id" column="customer_ID"/>
+                <result property="customerName" column="customerName"/>
+                <result property="customerLevel" column="customerLevel"/>
+                <result property="customerCreateDate" column="customerCreateDate"/>
+                <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+            </association>
+         </association>
+    </resultMap>
+
+    <insert id="add" parameterType="ContractDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into contractdetail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="contractID != null">
+                contractID,
+            </if>
+            <if test="exportDate != null">
+                exportDate,
+            </if>
+            <if test="vehicleNumber != null">
+                vehicleNumber,
+            </if>
+            <if test="projectAddress != null">
+                projectAddress,
+            </if>
+            <if test="productMode != null">
+                productMode,
+            </if>
+            <if test="productPrice != null">
+                productPrice,
+            </if>
+            <if test="productDeposit != null">
+                productDeposit,
+            </if>
+            <if test="supplyDescription != null">
+                supplyDescription,
+            </if>
+            <if test="salePerson != null">
+                salePerson,
+            </if>
+            <if test="startDate != null">
+                startDate,
+            </if>
+            <if test="finalDate != null">
+                finalDate,
+            </if>
+            <if test="dateCycle != null">
+                dateCycle,
+            </if>
+            <if test="canPayQuota != null">
+                canPayQuota,
+            </if>
+            <if test="productDiscount != null">
+                productDiscount,
+            </if>
+            <if test="hasPayQuota != null">
+                hasPayQuota,
+            </if>
+            <if test="unPayQuota != null">
+                unPayQuota,
+            </if>
+            <if test="payState != null">
+                payState,
+            </if>
+            <if test="hasBill != null">
+                hasBill,
+            </if>
+            <if test="payRemindDays != null">
+                payRemindDays,
+            </if>
+            <if test="contractDetailRemarkDescription != null">
+                contractDetailRemarkDescription,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="contractID != null">
+                #{contractID},
+            </if>
+            <if test="exportDate != null">
+                #{exportDate},
+            </if>
+            <if test="vehicleNumber != null">
+                #{vehicleNumber},
+            </if>
+            <if test="projectAddress != null">
+                #{projectAddress},
+            </if>
+            <if test="productMode != null">
+                #{productMode},
+            </if>
+            <if test="productPrice != null">
+                #{productPrice},
+            </if>
+            <if test="productDeposit != null">
+                #{productDeposit},
+            </if>
+            <if test="supplyDescription != null">
+                #{supplyDescription},
+            </if>
+            <if test="salePerson != null">
+                #{salePerson},
+            </if>
+            <if test="startDate != null">
+                #{startDate},
+            </if>
+            <if test="finalDate != null">
+                #{finalDate},
+            </if>
+            <if test="dateCycle != null">
+                #{dateCycle},
+            </if>
+            <if test="canPayQuota != null">
+                #{canPayQuota},
+            </if>
+            <if test="productDiscount != null">
+                #{productDiscount},
+            </if>
+            <if test="hasPayQuota != null">
+                #{hasPayQuota},
+            </if>
+            <if test="unPayQuota != null">
+                #{unPayQuota},
+            </if>
+            <if test="payState != null">
+                #{payState},
+            </if>
+            <if test="hasBill != null">
+                #{hasBill},
+            </if>
+            <if test="payRemindDays != null">
+                #{payRemindDays},
+            </if>
+            <if test="contractDetailRemarkDescription != null">
+                #{contractDetailRemarkDescription},
+            </if>
+        </trim>
+    </insert>
+
+	<delete id="delete" parameterType="int">
+		delete from contractdetail where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="ContractDetail">
+		update contractdetail
+		<set>
+            <if test="contractID != null">
+                contractID = #{contractID},
+            </if>
+            <if test="exportDate != null">
+                exportDate = #{exportDate},
+            </if>
+		    <if test="vehicleNumber != null">
+				vehicleNumber = #{vehicleNumber},
+			</if>
+            <if test="projectAddress != null">
+                projectAddress = #{projectAddress},
+            </if>
+            <if test="productMode != null">
+                productMode = #{productMode},
+            </if>
+            <if test="productPrice != null">
+                productPrice = #{productPrice},
+            </if>
+            <if test="productDeposit != null">
+                productDeposit = #{productDeposit},
+            </if>
+            <if test="supplyDescription != null">
+                supplyDescription = #{supplyDescription},
+            </if>
+            <if test="salePerson != null">
+                salePerson = #{salePerson},
+            </if>
+			<if test="startDate != null">
+				startDate = #{startDate},
+			</if>
+			<if test="finalDate != null">
+				finalDate = #{finalDate},
+			</if>
+			<if test="dateCycle != null">
+				dateCycle = #{dateCycle},
+			</if>
+			<if test="canPayQuota != null">
+				canPayQuota = #{canPayQuota},
+			</if>
+            <if test="productDiscount != null">
+                productDiscount = #{productDiscount},
+            </if>
+			<if test="hasPayQuota != null">
+				hasPayQuota = #{hasPayQuota},
+			</if>
+            <if test="unPayQuota != null">
+                unPayQuota = #{unPayQuota},
+            </if>
+			<if test="payState != null">
+				payState = #{payState},
+			</if>
+			<if test="hasBill != null">
+				hasBill = #{hasBill},
+			</if>
+            <if test="payRemindDays != null">
+                payRemindDays = #{payRemindDays},
+            </if>
+			<if test="contractDetailRemarkDescription != null">
+				contractDetailRemarkDescription = #{contractDetailRemarkDescription},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" />from contractdetail as a left join contract as b on a.contractID = b.id left join customer as c on b.customerID = c.id
+		where a.id = #{id}
+	</select>
+
+	<select id="findAll" resultMap="res">
+		select <include refid="base" /> from contractdetail as a left join contract as b on a.contractID = b.id left join customer as c on b.customerID = c.id
+        order by a.exportDate DESC
+	</select>
+
+	<select id="findByCondition" parameterType="ContractDetail" resultMap="res">
+		select <include refid="base" /> from contractdetail as a left join contract as b on a.contractID = b.id left join customer as c on b.customerID = c.id
+		<where>
+            <!--模糊查询-->
+            <if test="searchString != null">
+                and (a.vehicleNumber like concat(concat('%', #{searchString}), '%')
+                or a.projectAddress like concat(concat('%', #{searchString}), '%')
+                or a.hasBill like concat(concat('%', #{searchString}), '%')
+                or a.productMode like concat(concat('%', #{searchString}), '%')
+                or a.supplyDescription like concat(concat('%', #{searchString}), '%')
+                or a.payState like concat(concat('%', #{searchString}), '%')
+                or a.salePerson like concat(concat('%', #{searchString}), '%')
+                or a.contractDetailRemarkDescription like concat(concat('%', #{searchString}), '%')
+                or b.contractNumber like concat(concat('%', #{searchString}), '%')
+                or b.contractType like concat(concat('%', #{searchString}), '%')
+                or b.contractState like concat(concat('%', #{searchString}), '%')
+                or c.customerName like concat(concat('%', #{searchString}), '%'))
+            </if>
+            <if test="timeStart != null and timeFinal!=null">
+                and a.exportDate between #{timeStart} and #{timeFinal}
+            </if>
+            <if test="timeStart != null and timeFinal==null">
+                and (year(a.exportDate) = year(#{timeStart}) and month(a.exportDate) = month(#{timeStart}) and day(a.exportDate) = day(#{timeStart}))
+            </if>
+            <if test="timeStart == null and timeFinal!=null">
+                and (year(a.exportDate) = year(#{timeFinal}) and month(a.exportDate) = month(#{timeFinal}) and day(a.exportDate) = day(#{timeFinal}))
+            </if>
+            <!--未付清的代理商、租赁合同到期、出售回款预警-->
+            <if test="payState != null">
+                and a.payState = #{payState}
+            </if>
+            <if test="contract.customerID != null">
+                and b.customerID = #{contract.customerID}
+            </if>
+            <if test="contract.contractType != null">
+                and b.contractType = #{contract.contractType}
+            </if>
+            <if test="contract.contractState != null">
+                and b.contractState = #{contract.contractState}
+            </if>
+            <if test="isDeadLine != null">
+                and TIMESTAMPDIFF(DAY,CURDATE(),a.finalDate) &lt;= a.payRemindDays
+            </if>
+		</where>
+        order by a.exportDate DESC
+	</select>
+
+    <select id="findByConditions" parameterType="ContractDetail" resultMap="res">
+        select <include refid="base" /> from contractdetail as a left join contract as b on a.contractID = b.id left join customer as c on b.customerID = c.id
+        <where>
+            <if test="contractID != null">
+                and a.contractID = #{contractID}
+            </if>
+            <if test="isFuzzy==null and vehicleNumber != null">
+                and a.vehicleNumber = #{vehicleNumber}
+            </if>
+            <if test="isFuzzy!=null and vehicleNumber != null">
+                and a.vehicleNumber like concat(concat('%', #{vehicleNumber}), '%')
+            </if>
+            <if test="projectAddress != null">
+                and a.projectAddress = #{projectAddress}
+            </if>
+            <if test="productMode != null">
+                and a.productMode = #{productMode}
+            </if>
+            <if test="salePerson != null">
+                and a.salePerson = #{salePerson}
+            </if>
+            <!--未付清的代理商、租赁合同到期、出售回款预警-->
+            <if test="payState != null">
+                and a.payState = #{payState}
+            </if>
+            <if test="contract.customerID != null">
+                and b.customerID = #{contract.customerID}
+            </if>
+            <if test="contract.contractType != null">
+                and b.contractType = #{contract.contractType}
+            </if>
+            <if test="contract.contractState != null">
+                and b.contractState = #{contract.contractState}
+            </if>
+            <if test="isDeadLine != null">
+                and TIMESTAMPDIFF(DAY,CURDATE(),a.finalDate) &lt;= a.payRemindDays
+            </if>
+        </where>
+        order by a.exportDate DESC
+    </select>
+
+    <select id="findByConditionPage" parameterType="ContractDetail" resultMap="res">
+		select <include refid="base" /> from contractdetail as a left join contract as b on a.contractID = b.id left join customer as c on b.customerID = c.id
+		<where>
+            <!--模糊查询-->
+            <if test="searchString != null">
+                and (a.vehicleNumber like concat(concat('%', #{searchString}), '%')
+                or a.projectAddress like concat(concat('%', #{searchString}), '%')
+                or a.hasBill like concat(concat('%', #{searchString}), '%')
+                or a.productMode like concat(concat('%', #{searchString}), '%')
+                or a.supplyDescription like concat(concat('%', #{searchString}), '%')
+                or a.payState like concat(concat('%', #{searchString}), '%')
+                or a.salePerson like concat(concat('%', #{searchString}), '%')
+                or a.contractDetailRemarkDescription like concat(concat('%', #{searchString}), '%')
+                or b.contractNumber like concat(concat('%', #{searchString}), '%')
+                or b.contractType like concat(concat('%', #{searchString}), '%')
+                or b.contractState like concat(concat('%', #{searchString}), '%')
+                or c.customerName like concat(concat('%', #{searchString}), '%'))
+            </if>
+            <if test="timeStart != null and timeFinal!=null">
+                and a.exportDate between #{timeStart} and #{timeFinal}
+            </if>
+            <if test="timeStart != null and timeFinal==null">
+                and (year(a.exportDate) = year(#{timeStart}) and month(a.exportDate) = month(#{timeStart}) and day(a.exportDate) = day(#{timeStart}))
+            </if>
+            <if test="timeStart == null and timeFinal!=null">
+                and (year(a.exportDate) = year(#{timeFinal}) and month(a.exportDate) = month(#{timeFinal}) and day(a.exportDate) = day(#{timeFinal}))
+            </if>
+            <!--未付清的代理商、租赁合同到期、出售回款预警-->
+            <if test="payState != null">
+                and a.payState = #{payState}
+            </if>
+            <if test="contract.customerID != null">
+                and b.customerID = #{contract.customerID}
+            </if>
+            <if test="contract.contractType != null">
+                and b.contractType = #{contract.contractType}
+            </if>
+            <if test="contract.contractState != null">
+                and b.contractState = #{contract.contractState}
+            </if>
+            <if test="isDeadLine != null">
+                and TIMESTAMPDIFF(DAY,CURDATE(),a.finalDate) &lt;= a.payRemindDays
+            </if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by a.exportDate DESC, a.id limit #{start},#{limit}
+		</if>
+	</select>
+
+    <!-- 档案 -->
+    <sql id="record">
+          a.vehicleNumber
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Record" id="records">
+        <result property="vehicleNumber" column="vehicleNumber" />
+    </resultMap>
+
+    <select id="findByRecord" parameterType="ContractDetail" resultMap="records">
+        select <include refid="record" /> from contractdetail as a left join contract as b on a.contractID = b.id
+        <where>
+            and b.contractType &lt;&gt; '代理商'
+            <if test="vehicleNumber != null">
+                and a.vehicleNumber like concat(concat('%', #{vehicleNumber}), '%')
+            </if>
+        </where>
+        group by a.vehicleNumber
+    </select>
+
+    <select id="findByRecordPage" parameterType="ContractDetail" resultMap="records">
+        select <include refid="record" /> from contractdetail as a left join contract as b on a.contractID = b.id
+        <where>
+            and b.contractType &lt;&gt; '代理商'
+            <if test="vehicleNumber != null">
+                and a.vehicleNumber like concat(concat('%', #{vehicleNumber}), '%')
+            </if>
+        </where>
+        group by a.vehicleNumber
+        <if test="start !=null and limit != null">
+            order by a.id limit #{start},#{limit}
+        </if>
+    </select>
+
+    <!-- 汇总对象 -->
+    <sql id="summary">
+         count(a.id) as details, sum(a.canPayQuota) as canQuotas, sum(a.productDiscount) as discounts, sum(a.hasPayQuota) as inQuotas, sum(a.unPayQuota) as unQuotas
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Total" id="total">
+        <result property="details" column="details" />
+        <result property="canQuotas" column="canQuotas" />
+        <result property="discounts" column="discounts" />
+        <result property="inQuotas" column="inQuotas" />
+        <result property="unQuotas" column="unQuotas" />
+    </resultMap>
+
+	<select id="findTotalByCondition" parameterType="ContractDetail" resultMap="total">
+		select <include refid="summary" /> from contractdetail as a left join contract as b on a.contractID = b.id
+		<where>
+            <if test="payState != null">
+                and a.payState = #{payState}
+            </if>
+            <if test="contract.contractType != null">
+                and b.contractType = #{contract.contractType}
+            </if>
+            <if test="isYear != null">
+                and year(a.exportDate) = year(#{exportDate})
+            </if>
+            <if test="isMonth != null">
+                and year(a.exportDate) = year(#{exportDate})
+                and month(a.exportDate) = month(#{exportDate})
+            </if>
+            <if test="isToday != null">
+                and year(a.exportDate) = year(now())
+                and month(a.exportDate) = month(now())
+                and day(a.exportDate) = day(now())
+            </if>
+            <if test="isDeadLine != null">
+                and TIMESTAMPDIFF(DAY,CURDATE(),a.finalDate) &lt;= 0
+            </if>
+        </where>
+	</select>
+
+    <select id="findCountByCondition" parameterType="ContractDetail" resultType="Integer">
+        select count(a.id) from contractdetail as a left join contract as b on a.contractID = b.id
+        <where>
+            <if test="contract.contractType != null">
+                and b.contractType = #{contract.contractType}
+            </if>
+            <if test="payState != null">
+                and a.payState = #{payState}
+            </if>
+            <if test="isYear != null">
+                and year(a.exportDate) = year(#{exportDate})
+            </if>
+            <if test="isMonth != null">
+                and year(a.exportDate) = year(#{exportDate})
+                and month(a.exportDate) = month(#{exportDate})
+            </if>
+            <if test="isToday != null">
+                and year(a.exportDate) = year(now())
+                and month(a.exportDate) = month(now())
+                and day(a.exportDate) = day(now())
+            </if>
+            <if test="isDeadLine != null">
+                and TIMESTAMPDIFF(DAY,CURDATE(),a.finalDate) &lt;= 0
+            </if>
+        </where>
+    </select>
+
+</mapper>

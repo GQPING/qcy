@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.ContactDao">
+    
+    <sql id="base">
+         a.id, a.customerID, a.contactPerson, a.contactPhone, a.contactAddress, a.contactRemarkDescription,
+         b.id as customer_ID, b.customerName, b.customerLevel, b.customerCreateDate,  b.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Contact" id="res">
+        <id property="id" column="id"/>
+        <result property="customerID" column="customerID"/>
+        <result property="contactPerson" column="contactPerson"/>
+        <result property="contactPhone" column="contactPhone"/>
+        <result property="contactAddress" column="contactAddress"/>
+        <result property="contactRemarkDescription" column="contactRemarkDescription"/>
+        <association property="customer" javaType="Customer">
+            <id property="id" column="customer_ID"/>
+            <result property="customerName" column="customerName"/>
+            <result property="customerLevel" column="customerLevel"/>
+            <result property="customerCreateDate" column="customerCreateDate"/>
+            <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+        </association>
+    </resultMap>
+    
+    <insert id="add" parameterType="Contact" useGeneratedKeys="true" keyProperty="id"  keyColumn="id">
+         insert into contact
+         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="customerID != null">
+                customerID,
+            </if>
+            <if test="contactPerson != null">
+                contactPerson,
+            </if>
+            <if test="contactPhone != null">
+                contactPhone,
+            </if>
+            <if test="contactAddress != null">
+                contactAddress,
+            </if>
+            <if test="contactRemarkDescription != null">
+                contactRemarkDescription,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="customerID != null">
+                #{customerID},
+            </if>
+            <if test="contactPerson != null">
+                #{contactPerson},
+            </if>
+            <if test="contactPhone != null">
+                #{contactPhone},
+            </if>
+            <if test="contactAddress != null">
+                #{contactAddress},
+            </if>
+            <if test="contactRemarkDescription != null">
+                #{contactRemarkDescription},
+            </if>
+        </trim>
+    </insert>
+   
+	<delete id="delete" parameterType="int">
+		delete from contact where id = #{id}
+	</delete>
+ 
+	<update id="update" parameterType="Contact">
+		update contact
+		<set>
+		    <if test="customerID != null">
+                customerID = #{customerID},
+            </if>
+		    <if test="contactPerson != null">
+				contactPerson = #{contactPerson},
+			</if>
+			<if test="contactPhone != null">
+				contactPhone = #{contactPhone},
+			</if> 
+			<if test="contactAddress != null">
+				contactAddress = #{contactAddress},
+			</if>  
+            <if test="contactRemarkDescription != null">
+                contactRemarkDescription = #{contactRemarkDescription},
+            </if>
+		</set>
+		where id = #{id}
+	</update>
+  
+	<select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" /> from contact as a left join customer as b on a.customerID = b.id
+		where a.id = #{id}
+	</select>
+    
+    <select id="findAll" resultMap="res">
+		select <include refid="base" /> from contact as a left join customer as b on a.customerID = b.id
+	</select>
+    
+	<select id="findByCondition" parameterType="Contact" resultMap="res">
+		select <include refid="base" /> from contact as a left join customer as b on a.customerID = b.id
+		<where>
+            <!--模糊查询-->
+		    <if test="searchString != null">
+                and (b.customerName like concat(concat('%', #{searchString}), '%')
+                or a.contactPerson like concat(concat('%', #{searchString}), '%')
+                or a.contactAddress like concat(concat('%', #{searchString}), '%'))
+            </if>
+		</where>
+	</select>
+    
+    <select id="findByConditions" parameterType="Contact" resultMap="res">
+        select <include refid="base" /> from contact as a left join customer as b on a.customerID = b.id
+        <where>
+            <if test="customerID != null">
+                and a.customerID = #{customerID}
+            </if>
+        </where>
+    </select>
+    
+    <select id="findByConditionPage" parameterType="Contact" resultMap="res">
+		select <include refid="base" /> from contact as a left join customer as b on a.customerID = b.id
+		<where>
+            <!--模糊查询-->
+            <if test="searchString != null">
+                and (b.customerName like concat(concat('%', #{searchString}), '%')
+                or a.contactPerson like concat(concat('%', #{searchString}), '%')
+                or a.contactAddress like concat(concat('%', #{searchString}), '%'))
+            </if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by a.id limit #{start},#{limit};
+		</if>
+	</select>
+    
+</mapper>

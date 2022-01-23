@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.StageDao">
+
+    <sql id="base">
+         a.id,a.contractDetailID,a.stageStartDate,a.stageEndDate,a.stageDateCycle,a.stageCanPayQuota,a.stageBadPayQuota,
+         a.stageHasPayQuota,a.stageUnPayQuota,a.stagePayState,a.stageHasBill,a.stagePayRemindDays,a.stageRemarkDescription,
+         b.id,b.contractID,b.exportDate,b.vehicleNumber,b.projectAddress,b.productMode,b.productPrice,b.productDeposit,b.supplyDescription,b.salePerson,
+         b.startDate,b.finalDate,b.dateCycle,b.canPayQuota,b.productDiscount,b.hasPayQuota,b.unPayQuota,b.payState,b.hasBill,b.payRemindDays,b.contractDetailRemarkDescription,
+         c.id as contract_ID, c.customerID, c.contractNumber, c.signDate, c.contractType, c.marketPerson, c.contractPayBank, c.contractState, c.contractRemarkDescription,
+         d.id as customer_ID, d.customerName, d.customerLevel, d.customerCreateDate,  d.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Stage" id="res">
+         <id property="id" column="id"/>
+         <result property="contractDetailID" column="contractDetailID"/>
+		 <result property="stageStartDate" column="stageStartDate"/>
+		 <result property="stageEndDate" column="stageEndDate"/>
+		 <result property="stageDateCycle" column="stageDateCycle"/>
+         <result property="stageCanPayQuota" column="stageCanPayQuota"/>
+		 <result property="stageBadPayQuota" column="stageBadPayQuota"/>
+         <result property="stageHasPayQuota" column="stageHasPayQuota"/>
+         <result property="stageUnPayQuota" column="stageUnPayQuota"/>
+         <result property="stagePayState" column="stagePayState"/>
+		 <result property="stageHasBill" column="stageHasBill" />
+		 <result property="stagePayRemindDays" column="stagePayRemindDays" />
+         <result property="stageRemarkDescription" column="stageRemarkDescription" />
+         <association property="contractDetail" javaType="ContractDetail">
+             <id property="id" column="contractDetail_ID" />
+			 <result property="contractID" column="contractID" />
+			 <result property="exportDate" column="exportDate" />
+			 <result property="vehicleNumber" column="vehicleNumber" />
+			 <result property="projectAddress" column="projectAddress" />
+			 <result property="productMode" column="productMode" />
+			 <result property="productPrice" column="productPrice" />
+			 <result property="productDeposit" column="productDeposit" />
+			 <result property="supplyDescription" column="supplyDescription" />
+			 <result property="salePerson" column="salePerson" />
+			 <result property="startDate" column="startDate" />
+			 <result property="finalDate" column="finalDate" />
+			 <result property="dateCycle" column="dateCycle" />
+			 <result property="canPayQuota" column="canPayQuota" />
+			 <result property="productDiscount" column="productDiscount" />
+			 <result property="hasPayQuota" column="hasPayQuota" />
+			 <result property="unPayQuota" column="unPayQuota" />
+			 <result property="payState" column="payState" />
+			 <result property="hasBill" column="hasBill" />
+			 <result property="payRemindDays" column="payRemindDays" />
+			 <result property="contractDetailRemarkDescription" column="contractDetailRemarkDescription" />
+			 <association property="contract" javaType="Contract">
+				 <id property="id" column="contract_ID"/>
+				 <result property="customerID" column="customerID"/>
+				 <result property="contractNumber" column="contractNumber"/>
+				 <result property="signDate" column="signDate"/>
+				 <result property="contractType" column="contractType"/>
+				 <result property="marketPerson" column="marketPerson"/>
+				 <result property="contractPayBank" column="contractPayBank"/>
+				 <result property="contractState" column="contractState"/>
+				 <result property="contractRemarkDescription" column="contractRemarkDescription"/>
+				 <association property="customer" javaType="Customer">
+					 <result property="id" column="customer_ID"/>
+					 <result property="customerName" column="customerName"/>
+					 <result property="customerLevel" column="customerLevel"/>
+					 <result property="customerCreateDate" column="customerCreateDate"/>
+					 <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+				 </association>
+			 </association>
+         </association>
+    </resultMap>
+
+	<insert id="add" parameterType="Stage" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into stage
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="contractDetailID != null">
+				contractDetailID,
+			</if>
+			<if test="stageStartDate != null">
+				stageStartDate,
+			</if>
+			<if test="stageEndDate != null">
+				stageEndDate,
+			</if>
+			<if test="stageDateCycle != null">
+				stageDateCycle,
+			</if>
+			<if test="stageCanPayQuota != null">
+				stageCanPayQuota,
+			</if>
+			<if test="stageBadPayQuota != null">
+				stageBadPayQuota,
+			</if>
+			<if test="stageHasPayQuota != null">
+				stageHasPayQuota,
+			</if>
+			<if test="stageUnPayQuota != null">
+				stageUnPayQuota,
+			</if>
+			<if test="stagePayState != null">
+				stagePayState,
+			</if>
+			<if test="stageHasBill != null">
+				stageHasBill,
+			</if>
+			<if test="stagePayRemindDays != null">
+				stagePayRemindDays,
+			</if>
+			<if test="stageRemarkDescription != null">
+				stageRemarkDescription,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="contractDetailID != null">
+				#{contractDetailID},
+			</if>
+			<if test="stageStartDate != null">
+				#{stageStartDate},
+			</if>
+			<if test="stageEndDate != null">
+				#{stageEndDate},
+			</if>
+			<if test="stageDateCycle != null">
+				#{stageDateCycle},
+			</if>
+			<if test="stageCanPayQuota != null">
+				#{stageCanPayQuota},
+			</if>
+			<if test="stageBadPayQuota != null">
+				#{stageBadPayQuota},
+			</if>
+			<if test="stageHasPayQuota != null">
+				#{stageHasPayQuota},
+			</if>
+			<if test="stageUnPayQuota != null">
+				#{stageUnPayQuota},
+			</if>
+			<if test="stagePayState != null">
+				#{stagePayState},
+			</if>
+			<if test="stageHasBill != null">
+				#{stageHasBill},
+			</if>
+			<if test="stagePayRemindDays != null">
+				#{stagePayRemindDays},
+			</if>
+			<if test="stageRemarkDescription != null">
+				#{stageRemarkDescription},
+			</if>
+		</trim>
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		delete from stage where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Stage">
+		update stage
+		<set>
+			<if test="contractDetailID != null">
+				contractDetailID = #{contractDetailID},
+			</if>
+			<if test="stageStartDate != null">
+				stageStartDate = #{stageStartDate},
+			</if>
+			<if test="stageEndDate != null">
+				stageEndDate = #{stageEndDate},
+			</if>
+			<if test="stageDateCycle != null">
+				stageDateCycle = #{stageDateCycle},
+			</if>
+            <if test="stageCanPayQuota != null">
+                stageCanPayQuota = #{stageCanPayQuota},
+            </if>
+			<if test="stageBadPayQuota != null">
+				stageBadPayQuota = #{stageBadPayQuota},
+			</if>
+            <if test="stageHasPayQuota != null">
+                stageHasPayQuota = #{stageHasPayQuota},
+            </if>
+            <if test="stageUnPayQuota != null">
+                stageUnPayQuota = #{stageUnPayQuota},
+            </if>
+            <if test="stagePayState != null">
+                stagePayState = #{stagePayState},
+            </if>
+			<if test="stageHasBill != null">
+				stageHasBill = #{stageHasBill},
+			</if>
+			<if test="stagePayRemindDays != null">
+				stagePayRemindDays = #{stagePayRemindDays},
+			</if>
+            <if test="stageRemarkDescription != null">
+                stageRemarkDescription = #{stageRemarkDescription},
+            </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" /> from stage as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		where a.id = #{id}
+	</select>
+
+	<select id="findAll" resultMap="res">
+		select <include refid="base" /> from stage as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		order by a.stageStartDate DESC
+	</select>
+
+	<select id="findByCondition" parameterType="Stage" resultMap="res">
+		select <include refid="base" /> from stage as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<!--模糊查询-->
+			<if test="searchString != null">
+				and (a.stagePayState like concat(concat('%', #{searchString}), '%')
+				or b.vehicleNumber like concat(concat('%', #{searchString}), '%')
+				or b.projectAddress like concat(concat('%', #{searchString}), '%')
+				or c.contractNumber like concat(concat('%', #{searchString}), '%')
+				or c.contractType like concat(concat('%', #{searchString}), '%')
+				or d.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.stageStartDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.stageStartDate) = year(#{timeStart}) and month(a.stageStartDate) = month(#{timeStart}) and day(a.stageStartDate) = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.stageStartDate) = year(#{timeFinal}) and month(a.stageStartDate) = month(#{timeFinal}) and day(a.stageStartDate) = day(#{timeFinal}))
+			</if>
+			<!--未付清的租赁、代理分阶段到期-->
+			<if test="stagePayState != null">
+				and a.stagePayState = #{stagePayState}
+			</if>
+			<if test="contractDetail.contract.customerID != null">
+				and c.customerID = #{contractDetail.contract.customerID}
+			</if>
+			<if test="contractDetail.contract.contractType != null">
+				and c.contractType = #{contractDetail.contract.contractType}
+			</if>
+			<if test="contractDetail.contract.contractState != null">
+				and c.contractState = #{contractDetail.contract.contractState}
+			</if>
+			<if test="isDeadLine != null">
+				and TIMESTAMPDIFF(DAY,CURDATE(),a.stageEndDate) &lt;= a.stagePayRemindDays
+			</if>
+		</where>
+		order by a.stageStartDate DESC
+	</select>
+
+	<select id="findByConditions" parameterType="Stage" resultMap="res">
+		select <include refid="base" /> from stage as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<if test="contractDetailID != null">
+				and a.contractDetailID = #{contractDetailID}
+			</if>
+			<if test="searchDate != null">
+				and #{searchDate} between a.stageStartDate and a.stageEndDate
+			</if>
+			<if test="stageStartDate != null and stageEndDate != null">
+				and (#{stageStartDate} between a.stageStartDate and a.stageEndDate
+				or #{stageEndDate} between a.stageStartDate and a.stageEndDate)
+			</if>
+			<if test="stageStartDate != null and stageEndDate == null">
+				and #{stageStartDate} between a.stageStartDate and a.stageEndDate
+			</if>
+			<if test="stageStartDate == null and stageEndDate != null">
+				and #{stageEndDate} between a.stageStartDate and a.stageEndDate
+			</if>
+			<!--未付清的租赁、代理分阶段到期-->
+			<if test="stagePayState != null">
+				and a.stagePayState = #{stagePayState}
+			</if>
+			<if test="contractDetail.contract.customerID != null">
+				and c.customerID = #{contractDetail.contract.customerID}
+			</if>
+			<if test="contractDetail.contract.contractType != null">
+				and c.contractType = #{contractDetail.contract.contractType}
+			</if>
+			<if test="contractDetail.contract.contractState != null">
+				and c.contractState = #{contractDetail.contract.contractState}
+			</if>
+			<if test="isDeadLine != null">
+				and TIMESTAMPDIFF(DAY,CURDATE(),a.stageEndDate) &lt;= a.stagePayRemindDays
+			</if>
+		</where>
+		order by a.stageStartDate DESC
+	</select>
+
+	<select id="findByConditionPage" parameterType="Stage" resultMap="res">
+		select <include refid="base" /> from stage as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<!--模糊查询-->
+			<if test="searchString != null">
+				and (a.stagePayState like concat(concat('%', #{searchString}), '%')
+				or b.vehicleNumber like concat(concat('%', #{searchString}), '%')
+				or b.projectAddress like concat(concat('%', #{searchString}), '%')
+				or c.contractNumber like concat(concat('%', #{searchString}), '%')
+				or c.contractType like concat(concat('%', #{searchString}), '%')
+				or d.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.stageStartDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.stageStartDate) = year(#{timeStart}) and month(a.stageStartDate) = month(#{timeStart}) and day(a.stageStartDate) = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.stageStartDate) = year(#{timeFinal}) and month(a.stageStartDate) = month(#{timeFinal}) and day(a.stageStartDate) = day(#{timeFinal}))
+			</if>
+			<!--未付清的租赁、代理分阶段到期-->
+			<if test="stagePayState != null">
+				and a.stagePayState = #{stagePayState}
+			</if>
+			<if test="contractDetail.contract.customerID != null">
+				and c.customerID = #{contractDetail.contract.customerID}
+			</if>
+			<if test="contractDetail.contract.contractType != null">
+				and c.contractType = #{contractDetail.contract.contractType}
+			</if>
+			<if test="contractDetail.contract.contractState != null">
+				and c.contractState = #{contractDetail.contract.contractState}
+			</if>
+			<if test="isDeadLine != null">
+				and TIMESTAMPDIFF(DAY,CURDATE(),a.stageEndDate) &lt;= a.stagePayRemindDays
+			</if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by a.stageStartDate DESC, a.id limit #{start},#{limit}
+		</if>
+	</select>
+
+	<sql id="summary">
+         sum(a.stageCanPayQuota) as canQuotas,sum(a.stageBadPayQuota) as discounts, sum(a.stageHasPayQuota) as inQuotas, sum(a.stageUnPayQuota) as unQuotas
+    </sql>
+
+	<resultMap type="com.zyjd.cts.model.Total" id="total">
+		<result property="canQuotas" column="canQuotas" />
+		<result property="discounts" column="discounts" />
+		<result property="inQuotas" column="inQuotas" />
+		<result property="unQuotas" column="unQuotas" />
+	</resultMap>
+
+	<select id="findQuotasByCondition" parameterType="Stage" resultMap="total">
+		select <include refid="summary" /> from stage as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+		    <if test="contractDetailID != null">
+				and a.contractDetailID = #{contractDetailID}
+			</if>
+			<if test="stagePayState != null">
+				and a.stagePayState = #{stagePayState}
+			</if>
+			<if test="isYear != null">
+				and year(a.stageStartDate) = year(#{searchDate}) or year(a.stageEndDate) = year(#{searchDate})
+			</if>
+			<if test="isMonth != null">
+				and (year(a.stageStartDate) = year(#{searchDate}) and month(a.stageStartDate) = month(#{searchDate}))
+				or(year(a.stageEndDate) = year(#{searchDate}) and month(a.stageEndDate) = month(#{searchDate}))
+			</if>
+			<if test="isToday != null" >
+				and (year(a.a.stageStartDate) = year(now()) and month(a.a.stageStartDate) = month(now()) and day(a.a.stageStartDate) = day(now()))
+				or (year(a.stageEndDate) = year(now()) and month(a.stageEndDate) = month(now()) and day(a.stageEndDate) = day(now()))
+			</if>
+			<if test="isDeadLine != null">
+				and TIMESTAMPDIFF(DAY,CURDATE(),a.stageEndDate) &lt;= 0
+			</if>
+		</where>
+	</select>
+
+</mapper>

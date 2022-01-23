@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.ContractDao">
+
+    <sql id="base">
+         a.id, a.customerID, a.contractNumber, a.signDate, a.contractType, a.marketPerson, a.contractPayBank, a.contractState, a.contractRemarkDescription,
+         b.id as customer_ID, b.customerName, b.customerLevel, b.customerCreateDate,  b.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Contract" id="res">
+        <id property="id" column="id"/>
+        <result property="customerID" column="customerID"/>
+        <result property="contractNumber" column="contractNumber"/>
+        <result property="signDate" column="signDate"/>
+        <result property="contractType" column="contractType"/>
+        <result property="marketPerson" column="marketPerson"/>
+        <result property="contractPayBank" column="contractPayBank"/>
+        <result property="contractState" column="contractState"/>
+        <result property="contractRemarkDescription" column="contractRemarkDescription"/>
+        <association property="customer" javaType="Customer">
+            <result property="id" column="customer_ID"/>
+            <result property="customerName" column="customerName"/>
+            <result property="customerLevel" column="customerLevel"/>
+            <result property="customerCreateDate" column="customerCreateDate"/>
+            <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+        </association>
+    </resultMap>
+
+	<insert id="add" parameterType="Contract" useGeneratedKeys="true" keyProperty="id"  keyColumn="id">
+         insert into contract
+         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="customerID != null">
+                customerID,
+            </if>
+            <if test="contractNumber != null">
+                contractNumber,
+            </if>
+            <if test="signDate != null">
+                signDate,
+            </if>
+            <if test="contractType != null">
+                contractType,
+            </if>
+            <if test="marketPerson != null">
+                 marketPerson,
+            </if>
+            <if test="contractPayBank != null">
+                contractPayBank,
+            </if>
+            <if test="contractState != null">
+                 contractState,
+            </if>
+            <if test="contractRemarkDescription != null">
+                contractRemarkDescription,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="customerID != null">
+                #{customerID},
+            </if>
+            <if test="contractNumber != null">
+                #{contractNumber},
+            </if>
+            <if test="signDate != null">
+                #{signDate},
+            </if>
+            <if test="contractType != null">
+                #{contractType},
+            </if>
+            <if test="marketPerson != null">
+                #{marketPerson},
+            </if>
+            <if test="contractPayBank != null">
+                #{contractPayBank},
+            </if>
+            <if test="contractState != null">
+                #{contractState},
+            </if>
+            <if test="contractRemarkDescription != null">
+                #{contractRemarkDescription},
+            </if>
+        </trim>
+    </insert>
+
+	<delete id="delete" parameterType="int">
+		delete from contract where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Contract">
+		update contract
+		<set>
+            <if test="customerID != null">
+                customerID = #{customerID},
+            </if>
+            <if test="contractNumber != null">
+                contractNumber = #{contractNumber},
+            </if>
+            <if test="signDate != null">
+                signDate = #{signDate},
+            </if>
+            <if test="contractType != null">
+                contractType = #{contractType},
+            </if>
+            <if test="marketPerson != null">
+                marketPerson = #{marketPerson},
+            </if>
+            <if test="contractPayBank != null">
+                contractPayBank = #{contractPayBank},
+            </if>
+            <if test="contractState != null">
+                contractState = #{contractState},
+            </if>
+            <if test="contractRemarkDescription != null">
+                contractRemarkDescription = #{contractRemarkDescription},
+            </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" /> from contract as a left join customer as b on a.customerID = b.id
+		where a.id = #{id}
+	</select>
+
+	<select id="findAll" resultMap="res">
+		select <include refid="base" /> from contract as a left join customer as b on a.customerID = b.id
+        order by a.signDate DESC
+	</select>
+
+	<select id="findByCondition" parameterType="Contract" resultMap="res">
+		select <include refid="base" /> from contract as a left join customer as b on a.customerID = b.id
+		<where>
+		    <!--指定类型-->
+            <if test="contractType != null">
+                and a.contractType = #{contractType}
+            </if>
+            <!--模糊查询-->
+			<if test="searchString != null">
+				and (a.contractNumber like concat(concat('%', #{searchString}), '%')
+                or a.contractType like concat(concat('%', #{searchString}), '%')
+                or a.marketPerson like concat(concat('%', #{searchString}), '%')
+                or a.contractPayBank like concat(concat('%', #{searchString}), '%')
+                or a.contractState like concat(concat('%', #{searchString}), '%')
+                or a.contractRemarkDescription like concat(concat('%', #{searchString}), '%')
+				or b.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.signDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.signDate)  = year(#{timeStart}) and month(a.signDate) = month(#{timeStart}) and day(a.signDate)  = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.signDate)  = year(#{timeFinal}) and month(a.signDate) = month(#{timeFinal}) and day(a.signDate)  = day(#{timeFinal}))
+			</if>
+		</where>
+        order by a.signDate DESC
+	</select>
+
+    <select id="findByConditions" parameterType="Contract" resultMap="res">
+        select <include refid="base" /> from contract as a left join customer as b on a.customerID = b.id
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="customerID != null">
+                and a.customerID = #{customerID}
+            </if>
+            <if test="contractType != null">
+                and a.contractType = #{contractType}
+            </if>
+            <if test="marketPerson != null">
+                and a.marketPerson = #{marketPerson}
+            </if>
+            <if test="contractPayBank != null">
+                and a.contractPayBank = #{contractPayBank}
+            </if>
+            <if test="contractState != null">
+                and a.contractState = #{contractState}
+            </if>
+            <if test="isFuzzy==null and contractNumber != null">
+                and a.contractNumber = #{contractNumber}
+            </if>
+            <if test="isFuzzy!=null and contractNumber != null">
+                and a.contractNumber like concat(concat('%', #{contractNumber}), '%')
+            </if>
+            <if test="isYear != null">
+                and year(a.signDate) = year(#{signDate})
+            </if>
+            <if test="isMonth != null">
+                and year(a.signDate) = year(#{signDate}) and month(a.signDate) = month(#{signDate})
+            </if>
+            <if test="timeStart != null and timeFinal!=null">
+                and a.signDate between #{time_start} and #{time_end}
+            </if>
+            <if test="timeStart != null and timeFinal==null">
+                and year(a.signDate)  = year(#{time_start}) and month(a.signDate) = month(#{time_start}) and day(a.signDate) = day(#{time_start})
+            </if>
+            <if test="timeStart == null and timeFinal!=null">
+                and year(a.signDate)  = year(#{time_end}) and month(a.signDate) = month(#{time_end}) and day(a.signDate) = day(#{time_end})
+            </if>
+        </where>
+        order by a.signDate DESC
+    </select>
+
+    <select id="findByConditionPage" parameterType="Contract" resultMap="res">
+		select <include refid="base" /> from contract as a left join customer as b on a.customerID = b.id
+		<where>
+            <!--指定类型-->
+            <if test="contractType != null">
+                and a.contractType = #{contractType}
+            </if>
+            <!--模糊查询-->
+			<if test="searchString != null">
+                and (a.contractNumber like concat(concat('%', #{searchString}), '%')
+                or a.contractType like concat(concat('%', #{searchString}), '%')
+                or a.marketPerson like concat(concat('%', #{searchString}), '%')
+                or a.contractPayBank like concat(concat('%', #{searchString}), '%')
+                or a.contractState like concat(concat('%', #{searchString}), '%')
+                or a.contractRemarkDescription like concat(concat('%', #{searchString}), '%')
+                or b.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.signDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.signDate)  = year(#{timeStart}) and month(a.signDate) = month(#{timeStart}) and day(a.signDate) = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.signDate)  = year(#{timeFinal}) and month(a.signDate) = month(#{timeFinal}) and day(a.signDate) = day(#{timeFinal}))
+			</if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by a.signDate DESC, a.id limit #{start},#{limit}
+		</if>
+	</select>
+
+    <select id="findCountByCondition" parameterType="Contract" resultType="Integer">
+        select count(*) from contract
+        <where>
+            <if test="contractType != null">
+                and contractType = #{contractType}
+            </if>
+            <if test="isYear != null">
+                and year(signDate) = year(#{signDate})
+            </if>
+            <if test="isMonth != null">
+                and year(signDate) = year(#{signDate})
+                and month(signDate) = month(#{signDate})
+            </if>
+            <if test="isToday != null">
+                and year(signDate) = year(now())
+                and month(signDate) = month(now())
+                and day(signDate) = day(now())
+            </if>
+        </where>
+    </select>
+
+</mapper>

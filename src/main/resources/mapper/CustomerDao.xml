@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.CustomerDao">
+
+    <sql id="base">
+         id, customerName, customerLevel, customerCreateDate, customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Customer" id="res">
+         <id property="id" column="id"/>
+         <result property="customerName" column="customerName"/>
+		 <result property="customerLevel" column="customerLevel"/>
+		 <result property="customerCreateDate" column="customerCreateDate"/>
+         <result property="customerRemarkDescription" column="customerRemarkDescription" />
+    </resultMap>
+
+	<insert id="add" parameterType="Customer" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into customer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="customerName != null">
+				customerName,
+			</if>
+			<if test="customerLevel != null">
+				customerLevel,
+			</if>
+			<if test="customerCreateDate != null">
+				customerCreateDate,
+			</if>
+			<if test="customerRemarkDescription != null">
+				customerRemarkDescription,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="customerName != null">
+				#{customerName},
+			</if>
+			<if test="customerLevel != null">
+				#{customerLevel},
+			</if>
+			<if test="customerCreateDate != null">
+				#{customerCreateDate},
+			</if>
+			<if test="customerRemarkDescription != null">
+				#{customerRemarkDescription},
+			</if>
+		</trim>
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		delete from customer where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Customer">
+		update customer
+		<set>
+			<if test="customerName != null">
+				customerName = #{customerName},
+			</if>
+			<if test="customerLevel != null">
+				customerLevel = #{customerLevel},
+			</if>
+			<if test="customerRemarkDescription != null">
+				customerRemarkDescription = #{customerRemarkDescription},
+            </if>		
+		</set>
+		where id = #{id}
+	</update>
+
+    <select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" /> from customer
+		where id = #{id}
+	</select>
+
+	<select id="findAll" resultMap="res">
+		select <include refid="base" /> from customer
+		order by customerCreateDate DESC
+	</select>
+
+	<select id="findByCondition" parameterType="Customer" resultMap="res">
+		select <include refid="base" /> from customer
+		<where>
+			<if test="searchString != null">
+				and (customerName like concat(concat('%', #{searchString}), '%')
+				or customerRemarkDescription like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+			    and customerCreateDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(customerCreateDate)  = year(#{timeStart}) and month(customerCreateDate) = month(#{timeStart}) and day(customerCreateDate)  = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(customerCreateDate)  = year(#{timeFinal}) and month(customerCreateDate) = month(#{timeFinal}) and day(customerCreateDate)  = day(#{timeFinal}))
+			</if>	
+		</where>
+		order by customerCreateDate DESC
+	</select>
+
+	<select id="findByConditions" parameterType="Customer" resultMap="res">
+		select <include refid="base" /> from customer
+		<where>
+			<!--非模糊查询-->
+			<if test="isFuzzy==null and customerName!=null">
+				and customerName = #{customerName}
+			</if>
+			<!--模糊查询-->
+			<if test="isFuzzy!=null and customerName!=null">
+				and customerName like concat(concat('%', #{customerName}), '%')
+			</if>
+		</where>
+		order by customerCreateDate DESC
+	</select>
+
+	<select id="findByConditionPage" parameterType="Customer" resultMap="res">
+		select <include refid="base" /> from customer
+		<where>
+			<if test="searchString != null">
+				and (customerName like concat(concat('%', #{searchString}), '%')
+				or customerRemarkDescription like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and customerCreateDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(customerCreateDate)  = year(#{timeStart}) and month(customerCreateDate) = month(#{timeStart}) and day(customerCreateDate)  = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(customerCreateDate)  = year(#{timeFinal}) and month(customerCreateDate) = month(#{timeFinal}) and day(customerCreateDate)  = day(#{timeFinal}))
+			</if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by customerCreateDate DESC, id limit #{start},#{limit};
+		</if>
+	</select>
+
+	<select id="findCountByCondition" parameterType="Customer" resultType="Integer">
+		select count(*) from customer
+		<where>
+			<if test="isToday != null">
+				and year(customerCreateDate) = year(now())
+				and month(customerCreateDate) = month(now())
+				and day(customerCreateDate) = day(now())
+			</if>
+		</where>
+	</select>
+
+</mapper>

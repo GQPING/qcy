@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.VehicleDetailDao">
+
+    <sql id="base">
+        a.id, a.contractDetailID, a.vehicleMode, a.vehicleVolume, a.vehiclePrice, a.vehicleDescription,
+        b.id,b.contractID,b.exportDate,b.vehicleNumber,b.projectAddress,b.productMode,b.productPrice,b.productDeposit,b.supplyDescription,b.salePerson,
+        b.startDate,b.finalDate,b.dateCycle,b.canPayQuota,b.productDiscount,b.hasPayQuota,b.unPayQuota,b.payState,b.hasBill,b.payRemindDays,b.contractDetailRemarkDescription,
+        c.id as contract_ID, c.customerID, c.contractNumber, c.signDate, c.contractType, c.marketPerson, c.contractPayBank, c.contractState, c.contractRemarkDescription,
+        d.id as customer_ID, d.customerName, d.customerLevel, d.customerCreateDate,  d.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.VehicleDetail" id="res">
+        <id property="id" column="id"/>
+        <result property="contractDetailID" column="contractDetailID"/>
+        <result property="vehicleMode" column="vehicleMode"/>
+        <result property="vehicleVolume" column="vehicleVolume"/>
+        <result property="vehiclePrice" column="vehiclePrice"/>
+        <result property="vehicleDescription" column="vehicleDescription"/>
+        <association property="contractDetail" javaType="ContractDetail">
+            <id property="id" column="contractDetail_ID" />
+            <result property="contractID" column="contractID" />
+            <result property="exportDate" column="exportDate" />
+            <result property="vehicleNumber" column="vehicleNumber" />
+            <result property="projectAddress" column="projectAddress" />
+            <result property="productMode" column="productMode" />
+            <result property="productPrice" column="productPrice" />
+            <result property="productDeposit" column="productDeposit" />
+            <result property="supplyDescription" column="supplyDescription" />
+            <result property="salePerson" column="salePerson" />
+            <result property="startDate" column="startDate" />
+            <result property="finalDate" column="finalDate" />
+            <result property="dateCycle" column="dateCycle" />
+            <result property="canPayQuota" column="canPayQuota" />
+            <result property="productDiscount" column="productDiscount" />
+            <result property="hasPayQuota" column="hasPayQuota" />
+            <result property="unPayQuota" column="unPayQuota" />
+            <result property="payState" column="payState" />
+            <result property="hasBill" column="hasBill" />
+            <result property="payRemindDays" column="payRemindDays" />
+            <result property="contractDetailRemarkDescription" column="contractDetailRemarkDescription" />
+            <association property="contract" javaType="Contract">
+                <id property="id" column="contract_ID"/>
+                <result property="customerID" column="customerID"/>
+                <result property="contractNumber" column="contractNumber"/>
+                <result property="signDate" column="signDate"/>
+                <result property="contractType" column="contractType"/>
+                <result property="marketPerson" column="marketPerson"/>
+                <result property="contractPayBank" column="contractPayBank"/>
+                <result property="contractState" column="contractState"/>
+                <result property="contractRemarkDescription" column="contractRemarkDescription"/>
+                <association property="customer" javaType="Customer">
+                    <result property="id" column="customer_ID"/>
+                    <result property="customerName" column="customerName"/>
+                    <result property="customerLevel" column="customerLevel"/>
+                    <result property="customerCreateDate" column="customerCreateDate"/>
+                    <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+                </association>
+            </association>
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="VehicleDetail" useGeneratedKeys="true" keyProperty="id"  keyColumn="id">
+        insert into vehicledetail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="contractDetailID != null">
+                contractDetailID,
+            </if>
+            <if test="vehicleMode != null">
+                vehicleMode,
+            </if>
+            <if test="vehicleVolume != null">
+                vehicleVolume,
+            </if>
+            <if test="vehiclePrice != null">
+                vehiclePrice,
+            </if>
+            <if test="vehicleDescription != null">
+                vehicleDescription,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="contractDetailID != null">
+                #{contractDetailID},
+            </if>
+            <if test="vehicleMode != null">
+                #{vehicleMode},
+            </if>
+            <if test="vehicleVolume != null">
+                #{vehicleVolume},
+            </if>
+            <if test="vehiclePrice != null">
+                #{vehiclePrice},
+            </if>
+            <if test="vehicleDescription != null">
+                #{vehicleDescription},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete" parameterType="int">
+		delete from vehicledetail where id = #{id}
+	</delete>
+
+    <update id="update" parameterType="VehicleDetail">
+        update vehicledetail
+        <set>
+            <if test="contractDetailID != null">
+                contractDetailID = #{contractDetailID},
+            </if>
+            <if test="vehicleMode != null">
+                vehicleMode = #{vehicleMode},
+            </if>
+            <if test="vehicleVolume != null">
+                vehicleVolume = #{vehicleVolume},
+            </if>
+            <if test="vehiclePrice != null">
+                vehiclePrice = #{vehiclePrice},
+            </if>
+            <if test="vehicleDescription != null">
+                vehicleDescription = #{vehicleDescription},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="findById" parameterType="int" resultMap="res">
+        select <include refid="base" /> from vehicledetail as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+        where a.id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="res">
+        select <include refid="base" /> from vehicledetail as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+    </select>
+
+    <select id="findByCondition" parameterType="VehicleDetail" resultMap="res">
+        select <include refid="base" /> from vehicledetail as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+        <where>
+            <!--模糊查询-->
+            <if test="searchString != null">
+                and (a.vehicleMode like concat(concat('%', #{searchString}), '%')
+                or a.vehicleDescription like concat(concat('%', #{searchString}), '%')
+                or c.contractNumber like concat(concat('%', #{searchString}), '%')
+                or d.customerName like concat(concat('%', #{searchString}), '%'))
+            </if>
+            <if test="timeStart != null and timeFinal!=null">
+                and b.exportDate between #{timeStart} and #{timeFinal}
+            </if>
+            <if test="timeStart != null and timeFinal==null">
+                and (year(b.exportDate) = year(#{timeStart}) and month(b.exportDate) = month(#{timeStart}) and day(b.exportDate) = day(#{timeStart}))
+            </if>
+            <if test="timeStart == null and timeFinal!=null">
+                and (year(b.exportDate) = year(#{timeFinal}) and month(b.exportDate) = month(#{timeFinal}) and day(b.exportDate) = day(#{timeFinal}))
+            </if>
+        </where>
+    </select>
+
+    <select id="findByConditions" parameterType="VehicleDetail" resultMap="res">
+        select <include refid="base" /> from vehicledetail as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+        <where>
+            <if test="contractDetailID != null">
+                and a.contractDetailID = #{contractDetailID}
+            </if>
+            <if test="vehicleMode != null">
+                and a.vehicleMode = #{vehicleMode}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByConditionPage" parameterType="VehicleDetail" resultMap="res">
+        select <include refid="base" /> from vehicledetail as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+        <where>
+            <!--模糊查询-->
+            <if test="searchString != null">
+                and (a.vehicleMode like concat(concat('%', #{searchString}), '%')
+                or a.vehicleDescription like concat(concat('%', #{searchString}), '%')
+                or c.contractNumber like concat(concat('%', #{searchString}), '%')
+                or d.customerName like concat(concat('%', #{searchString}), '%'))
+            </if>
+            <if test="timeStart != null and timeFinal!=null">
+                and b.exportDate between #{timeStart} and #{timeFinal}
+            </if>
+            <if test="timeStart != null and timeFinal==null">
+                and (year(b.exportDate) = year(#{timeStart}) and month(b.exportDate) = month(#{timeStart}) and day(b.exportDate) = day(#{timeStart}))
+            </if>
+            <if test="timeStart == null and timeFinal!=null">
+                and (year(b.exportDate) = year(#{timeFinal}) and month(b.exportDate) = month(#{timeFinal}) and day(b.exportDate) = day(#{timeFinal}))
+            </if>
+        </where>
+        <if test="start !=null and limit != null">
+            order by a.id limit #{start},#{limit};
+        </if>
+    </select>
+
+</mapper>

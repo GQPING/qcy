@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.VisitDao">
+    
+    <sql id="base">
+        a.id, a.customerID, a.exportDate, a.productMode, a.projectAddress, a.description, a.visitCreateDate, a.visitRemarkDescription,
+        b.id as customer_ID, b.customerName, b.customerLevel, b.customerCreateDate, b.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Visit" id="res">
+        <id property="id" column="id"/>
+        <result property="customerID" column="customerID"/>
+        <result property="exportDate" column="exportDate"/>
+        <result property="productMode" column="productMode"/>
+        <result property="projectAddress" column="projectAddress"/>
+        <result property="description" column="description"/>
+        <result property="visitCreateDate" column="visitCreateDate"/>
+        <result property="visitRemarkDescription" column="visitRemarkDescription"/>
+        <association property="customer" javaType="Customer">
+            <id property="id" column="customer_ID"/>
+            <result property="customerName" column="customerName"/>
+            <result property="customerLevel" column="customerLevel"/>
+            <result property="customerCreateDate" column="customerCreateDate"/>
+            <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="Visit" useGeneratedKeys="true" keyProperty="id"  keyColumn="id">
+         insert into visit
+         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="customerID != null">
+                customerID,
+            </if>
+            <if test="exportDate != null">
+                exportDate,
+            </if>
+            <if test="productMode != null">
+                productMode,
+            </if>
+            <if test="projectAddress != null">
+                projectAddress,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="visitCreateDate != null">
+                visitCreateDate,
+            </if>
+            <if test="visitRemarkDescription != null">
+                visitRemarkDescription,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="customerID != null">
+                #{customerID},
+            </if>
+            <if test="exportDate != null">
+                #{exportDate},
+            </if>
+            <if test="productMode != null">
+                #{productMode},
+            </if>
+            <if test="projectAddress != null">
+                #{projectAddress},
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="visitCreateDate != null">
+                #{visitCreateDate},
+            </if>
+            <if test="visitRemarkDescription != null">
+                #{visitRemarkDescription},
+            </if>
+        </trim>
+    </insert>
+   
+	<delete id="delete" parameterType="int">
+		delete from visit where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Visit">
+		update visit
+		<set>
+		    <if test="customerID != null">
+                customerID = #{customerID},
+            </if>
+		    <if test="exportDate != null">
+				exportDate = #{exportDate},
+			</if>
+			<if test="productMode != null">
+				productMode = #{productMode},
+			</if>  
+			<if test="projectAddress != null">
+                projectAddress = #{projectAddress},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="visitRemarkDescription != null">
+                visitRemarkDescription = #{visitRemarkDescription},
+            </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" /> from visit as a left join customer as b on a.customerID = b.id
+		where a.id = #{id}
+	</select>
+    
+    <select id="findAll" resultMap="res">
+		select <include refid="base" /> from visit as a left join customer as b on a.customerID = b.id
+	</select>
+    
+	<select id="findByCondition" parameterType="Visit" resultMap="res">
+		select <include refid="base" /> from visit as a left join customer as b on a.customerID = b.id
+		<where>
+            <!--模糊查询-->
+            <if test="searchString != null">
+                and (b.customerName like concat(concat('%', #{searchString}), '%')
+                or a.productMode like concat(concat('%', #{searchString}), '%')
+                or a.projectAddress like concat(concat('%', #{searchString}), '%')
+                or a.description like concat(concat('%', #{searchString}), '%'))
+            </if>
+            <if test="timeStart != null and timeFinal!=null">
+                and a.visitCreateDate between #{timeStart} and #{timeFinal}
+            </if>
+            <if test="timeStart != null and timeFinal==null">
+                and (year(a.visitCreateDate)  = year(#{timeStart}) and month(a.visitCreateDate) = month(#{timeStart}) and day(a.visitCreateDate)  = day(#{timeStart}))
+            </if>
+            <if test="timeStart == null and timeFinal!=null">
+                and (year(a.visitCreateDate)  = year(#{timeFinal}) and month(a.visitCreateDate) = month(#{timeFinal}) and day(a.visitCreateDate)  = day(#{timeFinal}))
+            </if>
+        </where>
+	</select>
+
+    <select id="findByConditions" parameterType="Visit" resultMap="res">
+        select <include refid="base" /> from visit as a left join customer as b on a.customerID = b.id
+        <where>
+            <if test="customerID != null">
+                and a.customerID = #{customerID}
+            </if>
+        </where>
+    </select>
+    
+	<select id="findByConditionPage" parameterType="Visit" resultMap="res">
+		select <include refid="base" /> from visit as a left join customer as b on a.customerID = b.id
+		<where>
+            <!--模糊查询-->
+            <if test="searchString != null">
+                and (b.customerName like concat(concat('%', #{searchString}), '%')
+                or a.productMode like concat(concat('%', #{searchString}), '%')
+                or a.projectAddress like concat(concat('%', #{searchString}), '%')
+                or a.description like concat(concat('%', #{searchString}), '%'))
+            </if>
+            <if test="timeStart != null and timeFinal!=null">
+                and a.visitCreateDate between #{timeStart} and #{timeFinal}
+            </if>
+            <if test="timeStart != null and timeFinal==null">
+                and (year(a.visitCreateDate)  = year(#{timeStart}) and month(a.visitCreateDate) = month(#{timeStart}) and day(a.visitCreateDate)  = day(#{timeStart}))
+            </if>
+            <if test="timeStart == null and timeFinal!=null">
+                and (year(a.visitCreateDate)  = year(#{timeFinal}) and month(a.visitCreateDate) = month(#{timeFinal}) and day(a.visitCreateDate)  = day(#{timeFinal}))
+            </if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by a.id limit #{start},#{limit};
+		</if>
+	</select>
+    
+</mapper>

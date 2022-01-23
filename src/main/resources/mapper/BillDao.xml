@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyjd.cts.dao.BillDao">
+
+    <sql id="base">
+         a.id, a.contractDetailID, a.stageID, a.billType, a.billQuota, a.billDate, a.billRemarkDescription,
+         b.id,b.contractID,b.exportDate,b.vehicleNumber,b.projectAddress,b.productMode,b.productPrice,b.productDeposit,b.supplyDescription,b.salePerson,
+         b.startDate,b.finalDate,b.dateCycle,b.canPayQuota,b.productDiscount,b.hasPayQuota,b.unPayQuota,b.payState,b.hasBill,b.payRemindDays,b.contractDetailRemarkDescription,
+         c.id as contract_ID, c.customerID, c.contractNumber, c.signDate, c.contractType, c.marketPerson, c.contractPayBank, c.contractState, c.contractRemarkDescription,
+         d.id as customer_ID, d.customerName, d.customerLevel, d.customerCreateDate,  d.customerRemarkDescription
+    </sql>
+
+    <resultMap type="com.zyjd.cts.model.Bill" id="res">
+         <id property="id" column="id"/>
+		 <result property="contractDetailID" column="contractDetailID"/>
+		 <result property="stageID" column="stageID"/>
+		 <result property="billType" column="billType"/>
+		 <result property="billQuota" column="billQuota"/>
+		 <result property="billDate" column="billDate"/>
+		 <result property="billRemarkDescription" column="billRemarkDescription" />
+         <association property="contractDetail" javaType="ContractDetail">
+             <id property="id" column="contractDetail_ID" />
+			 <result property="contractID" column="contractID" />
+			 <result property="exportDate" column="exportDate" />
+			 <result property="vehicleNumber" column="vehicleNumber" />
+			 <result property="projectAddress" column="projectAddress" />
+			 <result property="productMode" column="productMode" />
+			 <result property="productPrice" column="productPrice" />
+			 <result property="productDeposit" column="productDeposit" />
+			 <result property="supplyDescription" column="supplyDescription" />
+			 <result property="salePerson" column="salePerson" />
+			 <result property="startDate" column="startDate" />
+			 <result property="finalDate" column="finalDate" />
+			 <result property="dateCycle" column="dateCycle" />
+			 <result property="canPayQuota" column="canPayQuota" />
+			 <result property="productDiscount" column="productDiscount" />
+			 <result property="hasPayQuota" column="hasPayQuota" />
+			 <result property="unPayQuota" column="unPayQuota" />
+			 <result property="payState" column="payState" />
+			 <result property="hasBill" column="hasBill" />
+			 <result property="payRemindDays" column="payRemindDays" />
+			 <result property="contractDetailRemarkDescription" column="contractDetailRemarkDescription" />
+			 <association property="contract" javaType="Contract">
+				 <id property="id" column="contract_ID"/>
+				 <result property="customerID" column="customerID"/>
+				 <result property="contractNumber" column="contractNumber"/>
+				 <result property="signDate" column="signDate"/>
+				 <result property="contractType" column="contractType"/>
+				 <result property="marketPerson" column="marketPerson"/>
+				 <result property="contractPayBank" column="contractPayBank"/>
+				 <result property="contractState" column="contractState"/>
+				 <result property="contractRemarkDescription" column="contractRemarkDescription"/>
+				 <association property="customer" javaType="Customer">
+					 <result property="id" column="customer_ID"/>
+					 <result property="customerName" column="customerName"/>
+					 <result property="customerLevel" column="customerLevel"/>
+					 <result property="customerCreateDate" column="customerCreateDate"/>
+					 <result property="customerRemarkDescription" column="customerRemarkDescription"/>
+				 </association>
+			 </association>
+         </association> 
+    </resultMap>
+
+	<insert id="add" parameterType="Bill" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into bill
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="contractDetailID != null">
+				contractDetailID,
+			</if>
+			<if test="stageID != null">
+				stageID,
+			</if>
+			<if test="billType != null">
+				billType,
+			</if>
+			<if test="billQuota != null">
+				billQuota,
+			</if>
+			<if test="billDate != null">
+				billDate,
+			</if>
+			<if test="billRemarkDescription != null">
+				billRemarkDescription,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="contractDetailID != null">
+				#{contractDetailID},
+			</if>
+			<if test="stageID != null">
+				#{stageID},
+			</if>
+			<if test="billType != null">
+				#{billType},
+			</if>
+			<if test="billQuota != null">
+				#{billQuota},
+			</if>
+			<if test="billDate != null">
+				#{billDate},
+			</if>
+			<if test="billRemarkDescription != null">
+				#{billRemarkDescription},
+			</if>
+		</trim>
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		delete from bill where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Bill">
+		update bill
+		<set>
+			<if test="contractDetailID != null">
+				contractDetailID = #{contractDetailID},
+			</if>
+			<if test="stageID != null">
+				stageID = #{stageID},
+			</if>
+			<if test="billType != null">
+				billType = #{billType},
+			</if>
+		    <if test="billQuota != null">
+				billQuota = #{billQuota},
+			</if>
+			<if test="billDate != null">
+				billDate = #{billDate},
+			</if>
+			<if test="billRemarkDescription != null">
+                billRemarkDescription = #{billRemarkDescription},
+            </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="updateNullByStageID" parameterType="int">
+		update bill set stageID = null where stageID = #{id}
+	</update>
+
+	<select id="findById" parameterType="int" resultMap="res">
+		select <include refid="base" /> from bill as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		where a.id = #{id}
+	</select>
+
+	<select id="findAll" resultMap="res">
+		select <include refid="base" /> from bill as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		order by a.billDate DESC
+	</select>
+
+	<select id="findByCondition" parameterType="Bill" resultMap="res">
+		select <include refid="base" /> from bill as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+		    <!--模糊查询-->
+			<if test="searchString != null">
+				and (a.billType like concat(concat('%', #{searchString}), '%')
+				or a.billRemarkDescription like concat(concat('%', #{searchString}), '%')
+				or b.vehicleNumber like concat(concat('%', #{searchString}), '%')
+				or b.projectAddress like concat(concat('%', #{searchString}), '%')
+				or c.contractNumber like concat(concat('%', #{searchString}), '%')
+				or c.contractType like concat(concat('%', #{searchString}), '%')
+				or d.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.billDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.billDate)  = year(#{timeStart}) and month(a.billDate) = month(#{timeStart}) and day(a.billDate)  = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.billDate)  = year(#{timeFinal}) and month(a.billDate) = month(#{timeFinal}) and day(a.billDate)  = day(#{timeFinal}))
+			</if>
+		</where>
+		order by a.billDate DESC
+	</select>
+
+	<select id="findByConditions" parameterType="Bill" resultMap="res">
+		select <include refid="base" /> from bill as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<if test="contractDetailID != null">
+				and a.contractDetailID = #{contractDetailID}
+			</if>
+			<if test="stageID != null">
+				and a.stageID = #{stageID}
+			</if>
+			<if test="billType != null">
+				and a.billType = #{billType}
+			</if>
+		</where>
+		order by a.billDate DESC
+	</select>
+
+	<select id="findByConditionPage" parameterType="Bill" resultMap="res">
+		select <include refid="base" /> from bill as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<!--模糊查询-->
+			<if test="searchString != null">
+			    and (a.billType like concat(concat('%', #{searchString}), '%')
+				or a.billRemarkDescription like concat(concat('%', #{searchString}), '%')
+			    or b.vehicleNumber like concat(concat('%', #{searchString}), '%')
+				or b.projectAddress like concat(concat('%', #{searchString}), '%')
+				or c.contractNumber like concat(concat('%', #{searchString}), '%')
+				or c.contractType like concat(concat('%', #{searchString}), '%')
+				or d.customerName like concat(concat('%', #{searchString}), '%'))
+			</if>
+			<if test="timeStart != null and timeFinal!=null">
+				and a.billDate between #{timeStart} and #{timeFinal}
+			</if>
+			<if test="timeStart != null and timeFinal==null">
+				and (year(a.billDate)  = year(#{timeStart}) and month(a.billDate) = month(#{timeStart}) and day(a.billDate)  = day(#{timeStart}))
+			</if>
+			<if test="timeStart == null and timeFinal!=null">
+				and (year(a.billDate)  = year(#{timeFinal}) and month(a.billDate) = month(#{timeFinal}) and day(a.billDate)  = day(#{timeFinal}))
+			</if>
+		</where>
+		<if test="start !=null and limit != null">
+			order by a.billDate DESC, a.id limit #{start},#{limit}
+		</if>
+	</select>
+
+	<select id="findQuotasByCondition" parameterType="Bill" resultType="Double">
+		select sum(a.billQuota) from bill as a left join contractdetail as b on a.contractDetailID = b.id left join contract as c on b.contractID = c.id left join customer as d on c.customerID = d.id
+		<where>
+			<if test="contractDetailID != null">
+				and a.contractDetailID = #{contractDetailID}
+			</if>
+			<if test="stageID != null" >
+				and a.stageID = #{stageID}
+			</if>
+			<if test="isCustomer != null and id != null" >
+				and d.id = #{id}
+			</if>
+			<if test="isContract != null and id != null" >
+				and c.id = #{id}
+			</if>
+			<if test="isYear != null">
+				and year(a.billDate) = year(#{billDate})
+			</if>
+			<if test="isMonth != null">
+				and year(a.billDate) = year(#{billDate})
+				and month(a.billDate) = month(#{billDate})
+			</if>
+			<if test="isToday != null" >
+				and year(a.billDate) = year(now())
+				and month(a.billDate) = month(now())
+				and day(a.billDate) = day(now())
+			</if>
+		</where>
+	</select>
+
+</mapper>
